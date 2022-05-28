@@ -41,7 +41,7 @@ public class MerchantController {
      * @param errors errors if any found from the date validation
      */
     @PostMapping()
-    ResponseEntity<Api> addRide(@RequestBody @Valid Merchant merchant, Errors errors){
+    ResponseEntity<Api> addMerchant(@RequestBody @Valid Merchant merchant, Errors errors){
         try {
             check(errors);
             return (merchantService.addMerchant(merchant)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
@@ -62,7 +62,7 @@ public class MerchantController {
                 merchantService.updateMerchant(merchant, newMerchant);
                 return ResponseEntity.status(HttpStatus.OK).body(new Api("Updated successfully!", HttpStatus.OK));
             } else
-                return addRide(newMerchant, errors);
+                return addMerchant(newMerchant, errors);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }

@@ -41,7 +41,7 @@ public class CategoryController {
      * @param errors errors if any found from the date validation
      */
     @PostMapping()
-    ResponseEntity<Api> addRide(@RequestBody @Valid Category category, Errors errors){
+    ResponseEntity<Api> addCategory(@RequestBody @Valid Category category, Errors errors){
         try {
             check(errors);
             return (categoryService.addCategory(category)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
@@ -62,7 +62,7 @@ public class CategoryController {
                 categoryService.updateCategory(category, newCategory);
                 return ResponseEntity.status(HttpStatus.OK).body(new Api("Updated successfully!", HttpStatus.OK));
             } else
-                return addRide(newCategory, errors);
+                return addCategory(newCategory, errors);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }

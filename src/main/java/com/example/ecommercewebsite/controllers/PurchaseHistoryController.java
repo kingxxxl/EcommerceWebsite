@@ -41,7 +41,7 @@ public class PurchaseHistoryController {
      * @param errors errors if any found from the date validation
      */
     @PostMapping()
-    ResponseEntity<Api> addRide(@RequestBody @Valid PurchaseHistory purchaseHistory, Errors errors){
+    ResponseEntity<Api> addPurchaseHistory(@RequestBody @Valid PurchaseHistory purchaseHistory, Errors errors){
         try {
             check(errors);
             return (purchaseHistoryService.addPurchaseHistory(purchaseHistory)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
@@ -62,7 +62,7 @@ public class PurchaseHistoryController {
                 purchaseHistoryService.updatePurchaseHistory(purchaseHistory, newPurchaseHistory);
                 return ResponseEntity.status(HttpStatus.OK).body(new Api("Updated successfully!", HttpStatus.OK));
             } else
-                return addRide(newPurchaseHistory, errors);
+                return addPurchaseHistory(newPurchaseHistory, errors);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }

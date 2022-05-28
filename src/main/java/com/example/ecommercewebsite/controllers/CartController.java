@@ -41,7 +41,15 @@ public class CartController {
      * @param errors errors if any found from the date validation
      */
     @PostMapping()
-    ResponseEntity<Api> addRide(@RequestBody @Valid Cart cart, Errors errors){
+    ResponseEntity<Api> addCart(@RequestBody @Valid Cart cart, Errors errors){
+        try {
+            check(errors);
+            return (cartService.addCart(cart)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
+        } catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
+        }
+    }@PostMapping("/add")
+    ResponseEntity<Api> addProductToUser(@RequestBody @Valid Cart cart, Errors errors){
         try {
             check(errors);
             return (cartService.addCart(cart)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
@@ -62,7 +70,7 @@ public class CartController {
                 cartService.updateCart(cart, newCart);
                 return ResponseEntity.status(HttpStatus.OK).body(new Api("Updated successfully!", HttpStatus.OK));
             } else
-                return addRide(newCart, errors);
+                return addCart(newCart, errors);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }

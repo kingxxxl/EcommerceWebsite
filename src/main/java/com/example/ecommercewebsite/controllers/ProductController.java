@@ -40,7 +40,7 @@ public class ProductController {
      * @param errors errors if any found from the date validation
      */
     @PostMapping()
-    ResponseEntity<Api> addRide(@RequestBody @Valid Product product, Errors errors){
+    ResponseEntity<Api> addProduct(@RequestBody @Valid Product product, Errors errors){
         try {
             check(errors);
             return (productService.addProduct(product)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
@@ -61,7 +61,7 @@ public class ProductController {
                 productService.updateProduct(product, newProduct);
                 return ResponseEntity.status(HttpStatus.OK).body(new Api("Updated successfully!", HttpStatus.OK));
             } else
-                return addRide(newProduct, errors);
+                return addProduct(newProduct, errors);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }
