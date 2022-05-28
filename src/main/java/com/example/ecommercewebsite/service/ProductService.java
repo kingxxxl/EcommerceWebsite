@@ -3,7 +3,6 @@ package com.example.ecommercewebsite.service;
 import com.example.ecommercewebsite.model.Comment;
 import com.example.ecommercewebsite.model.Product;
 import com.example.ecommercewebsite.model.PurchaseHistory;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -81,5 +80,31 @@ public class ProductService {
             }
         }
         return false;
+    }
+
+    public boolean isAllByRate(Integer intRate) {
+        for (Product p:products) {
+            for (Comment c: p.getCommentsList()) {
+                Integer curRate = Integer.valueOf(c.getRate());
+                if (intRate == curRate){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public List<Product> getAllByRate(Integer intRate) {
+        ArrayList<Product> allByRateProduct = new ArrayList<>();
+
+        for (Product p:products) {
+            for (Comment c: p.getCommentsList()) {
+                Integer curRate = Integer.valueOf(c.getRate());
+                if (intRate == curRate){
+                    allByRateProduct.add(p);
+                }
+            }
+        }
+        return allByRateProduct;
     }
 }

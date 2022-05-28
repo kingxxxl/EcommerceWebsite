@@ -60,13 +60,24 @@ public class ProductController {
         }
     }
     @GetMapping("/comment/{id}")
-    ResponseEntity<Api> addProduct(@PathVariable String id){
+    ResponseEntity<Api> getAllComment(@PathVariable String id){
         Product product = productService.getById(id);
         if (product != null){
             return (product.getCommentsList().size() >0) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api(product.getCommentsList().toString(), HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.OK).body(new Api("No comments for this product", HttpStatus.OK));
 
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api( "no product with that id!", HttpStatus.BAD_REQUEST));
+
+    }
+
+    @GetMapping("rate/{rate}")
+    ResponseEntity<Object> getAllProductRate(@PathVariable String rate){
+        Integer intRate = Integer.valueOf(rate);
+        if (intRate > 0 && intRate < 6){
+            return (productService.isAllByRate(intRate)) ? ResponseEntity.status(HttpStatus.CREATED).body(productService.getAllByRate(intRate)) : ResponseEntity.status(HttpStatus.OK).body(new Api("No product with rate of "+rate, HttpStatus.OK));
+
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api( "rate between 1 and 5!", HttpStatus.BAD_REQUEST));
 
     }
     /**
