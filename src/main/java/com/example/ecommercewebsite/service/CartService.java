@@ -11,11 +11,9 @@ import java.util.List;
 @Service
 public class CartService {
     List<Cart> carts = new ArrayList<>();
-    final UserService userService;
     final ProductService productService;
 
-    public CartService(UserService userService, ProductService productService) {
-        this.userService = userService;
+    public CartService(ProductService productService) {
         this.productService = productService;
         this.carts.addAll(
                 List.of(
@@ -68,28 +66,12 @@ public class CartService {
         return null;
     }
 
-    public boolean checkUserId(String userid) {
-        return (userService.isUserByID(userid)) ? true : false;
-    }
-
     public boolean checkProductId(String productid) {
         return (productService.isProductByID(productid)) ? true : false;
 
     }
 
-    public boolean addProductToUser(String userid, String productid) {
-        User user = userService.getById(userid);
-        Product product = productService.getById(productid);
-        if (!isUserCartByID(userid)){
-            String newCartId = String.valueOf(carts.size()+1);
-            carts.add(new Cart(newCartId,userid,new ArrayList<Product>()));
-        }
-        Cart cart = getByUserId(userid);
-        ArrayList<Product> products = cart.getProductsList();
-        products.add(product);
-        cart.setProductsList(products);
-        return true;
-    }
+
 
     private Cart getByUserId(String userid) {
         for (Cart c:carts) {
@@ -108,9 +90,19 @@ public class CartService {
         }
         return false ;
     }
-
+    public boolean addProductToUser(String userid, String productid) {
+        Product product = productService.getById(productid);
+        if (!isUserCartByID(userid)){
+            String newCartId = String.valueOf(carts.size()+1);
+            carts.add(new Cart(newCartId,userid,new ArrayList<Product>()));
+        }
+        Cart cart = getByUserId(userid);
+        ArrayList<Product> products = cart.getProductsList();
+        products.add(product);
+        cart.setProductsList(products);
+        return true;
+    }
     public boolean removeProductToUser(String userid, String productid) {
-        User user = userService.getById(userid);
         Product product = productService.getById(productid);
         if (!isUserCartByID(userid)){
             String newCartId = String.valueOf(carts.size()+1);

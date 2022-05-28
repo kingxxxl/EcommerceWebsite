@@ -4,6 +4,7 @@ import com.example.ecommercewebsite.model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -11,9 +12,11 @@ public class UserService {
     List<User> users = new ArrayList<>();
     final MerchantStockService merchantStockService;
     final PurchaseHistoryService purchaseHistoryService;
-    public UserService(MerchantService merchantService, MerchantStockService merchantStockService, PurchaseHistoryService purchaseHistoryService) {
+    final CartService cartService;
+    public UserService(MerchantService merchantService, MerchantStockService merchantStockService, PurchaseHistoryService purchaseHistoryService, CartService cartService) {
         this.merchantStockService = merchantStockService;
         this.purchaseHistoryService = purchaseHistoryService;
+        this.cartService = cartService;
         this.users.addAll(
                 List.of(
                         new User("101","Abdullah","a123456","email@email.com","admin",1000),
@@ -109,6 +112,62 @@ public class UserService {
         user.setBalance(user.getBalance()-product.getPrice());
         String newPurchaseHistoryId = String.valueOf(purchaseHistoryService.purchaseHistorys.size()+1);
         purchaseHistoryService.purchaseHistorys.add(new PurchaseHistory(newPurchaseHistoryId, userid, productid,product.getPrice()));
+        System.out.println("I was here3");
+        return true;
+    }
+
+    public boolean checkCart(Cart cart) {
+        for (Product p: cart.getProductsList()) {
+            if(!merchantStockService.productService.isProductByID(p.getId())){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean buyCart(Cart cart) {
+        boolean what = isEnoughStock(cart);
+        System.out.println(what);
+        if (!isEnoughMoney(cart) ||!isEnoughStock(cart)){
+            return false;
+        }
+        for (Product p:cart.getProductsList()) {
+            String merchantId = merchantStockService.getMerchantByProductID(p.getId());
+            if (!buyNoCart(cart.getUserid(), p.getId(),merchantId)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isEnoughMoney(Cart cart){
+        User user = getById(cart.getUserid());
+        Integer userBalance = user.getBalance();
+        Integer count = 0;
+        for (Product p:cart.getProductsList()){
+            count+=p.getPrice();
+        }
+        return userBalance >= count;
+    }
+    public boolean isEnoughStock(Cart cart){
+        HashMap<Product,Integer> count = new HashMap();
+        for (Product p:cart.getProductsList()){
+            Product product = merchantStockService.productService.getById(p.getId());
+            if (count.containsKey(p)){
+                count.replace(p, (count.get(p))+1);
+            }
+            else {
+                count.put(p,1);
+            }
+        }
+
+        System.out.println(count);
+        for (Product p: cart.getProductsList()) {
+            System.out.println("p= "+p.getId()+"count.p= "+count.get(p));
+            if (count.get(p) > merchantStockService.getStockByproductId(p.getId())){
+                return false;
+            }
+        }
         return true;
     }
 }

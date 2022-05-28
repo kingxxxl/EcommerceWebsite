@@ -1,5 +1,6 @@
 package com.example.ecommercewebsite.controllers;
 
+import com.example.ecommercewebsite.model.Cart;
 import com.example.ecommercewebsite.model.Product;
 import com.example.ecommercewebsite.model.User;
 import com.example.ecommercewebsite.service.UserService;
@@ -71,6 +72,18 @@ public class UserController {
             } else
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("user id, merchant id, product or stock  is not valid", HttpStatus.BAD_REQUEST));
 
+    }
+    @PutMapping("/buy/cart")
+    ResponseEntity<Api> addProductToMerchant(@RequestBody @Valid Cart cart, Errors errors) {
+        try {
+            check(errors);
+            if (userService.checkCart(cart)) {
+                return (userService.buyCart(cart)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("purchase was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("purchase was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
+            } else
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("some products or all are not valid", HttpStatus.BAD_REQUEST));
+        }catch(IllegalArgumentException e){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
+            }
     }
     /**
      * Update/Create data by passing an id.

@@ -101,4 +101,22 @@ public class MerchantStockService {
         }
         return false ;
     }
+
+    public String getMerchantByProductID(String productid) {
+        for (MerchantStock merchantStock: merchantStocks) {
+            if (merchantStock.getProductid().equals(productid)){
+                return merchantStock.getMerchantid();
+            }
+        }
+        return null;
+    }
+
+    public Integer getStockByproductId(String prodctid) {
+        for (MerchantStock merchantStock: merchantStocks) {
+            if (merchantStock.getProductid().equals(prodctid)) {
+                return merchantStock.getStock();
+            }
+        }
+        return 0;
+    }
 }
