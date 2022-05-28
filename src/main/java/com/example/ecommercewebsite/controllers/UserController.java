@@ -62,6 +62,14 @@ public class UserController {
         }catch(IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }
+    }
+    @PutMapping("/buy")
+    ResponseEntity<Api> addProductToMerchant( @PathParam("userid") String userid,@PathParam("productid") String productid,@PathParam("merchantid") String merchantid){
+
+            if(userService.isUserByID(userid) && userService.checkProductId(productid) && userService.checkMerchantId(merchantid)){
+                return (userService.buyNoCart(userid,productid,merchantid)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
+            } else
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("user id, merchant id, product or stock  is not valid", HttpStatus.BAD_REQUEST));
 
     }
     /**

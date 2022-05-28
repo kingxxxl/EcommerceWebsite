@@ -11,13 +11,6 @@ public class PurchaseHistoryService {
     List<PurchaseHistory> purchaseHistorys = new ArrayList<>();
 
     public PurchaseHistoryService() {
-        this.purchaseHistorys.addAll(
-                List.of(
-                        new PurchaseHistory("101","101","101",1200),
-                        new PurchaseHistory("102","101","101",1200),
-                        new PurchaseHistory("103","101","101",1200),
-                        new PurchaseHistory("104","101","101",1200)
-                ));
     }
     public List<PurchaseHistory> getPurchaseHistorys(){
         return purchaseHistorys;

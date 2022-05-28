@@ -12,16 +12,18 @@ public class MerchantStockService {
 
     List<MerchantStock> merchantStocks = new ArrayList<>();
     final MerchantService merchantService;
+    final ProductService productService;
 
 
-    public MerchantStockService(MerchantService merchantService) {
+    public MerchantStockService(MerchantService merchantService, ProductService productService) {
         this.merchantService = merchantService;
+        this.productService = productService;
         this.merchantStocks.addAll(
                 List.of(
-                        new MerchantStock("101","101","101",100),
-                        new MerchantStock("102","101","101",100),
-                        new MerchantStock("103","101","101",100),
-                        new MerchantStock("104","101","101",100)
+                        new MerchantStock("1","701","301",1),
+                        new MerchantStock("2","702","302",1),
+                        new MerchantStock("3","703","303",1),
+                        new MerchantStock("4","704","304",1)
                 ));
     }
     public List<MerchantStock> getMerchantStocks(){

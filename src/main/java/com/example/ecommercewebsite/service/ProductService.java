@@ -14,10 +14,10 @@ public class ProductService {
     public ProductService() {
         this.products.addAll(
                 List.of(
-                        new Product("101","Abdullah",1200,"101",new ArrayList<Comment>()),
-                        new Product("102","Ahmed",1200,"101",new ArrayList<Comment>()),
-                        new Product("103","Salah",1200,"101",new ArrayList<Comment>()),
-                        new Product("104","Ali",1200,"101",new ArrayList<Comment>())
+                        new Product("701","ball",350,"1",new ArrayList<Comment>()),
+                        new Product("702","shirt",90,"2",new ArrayList<Comment>()),
+                        new Product("703","mug",55,"3",new ArrayList<Comment>()),
+                        new Product("704","car",120500,"4",new ArrayList<Comment>())
                 ));
     }
     public List<Product> getProducts(){

@@ -3,7 +3,6 @@ package com.example.ecommercewebsite.service;
 import com.example.ecommercewebsite.model.*;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +10,13 @@ import java.util.List;
 public class UserService {
     List<User> users = new ArrayList<>();
     final MerchantStockService merchantStockService;
-    public UserService(MerchantService merchantService, MerchantStockService merchantStockService) {
+    final PurchaseHistoryService purchaseHistoryService;
+    public UserService(MerchantService merchantService, MerchantStockService merchantStockService, PurchaseHistoryService purchaseHistoryService) {
         this.merchantStockService = merchantStockService;
+        this.purchaseHistoryService = purchaseHistoryService;
         this.users.addAll(
                 List.of(
-                        new User("101","Abdullah","a123456","email@email.com","admin",100),
+                        new User("101","Abdullah","a123456","email@email.com","admin",1000),
                         new User("102","Ahmed","a123456","email@email.com","admin",100),
                         new User("103","Salah","a123456","email@email.com","admin",100),
                         new User("104","Ali","a123456","email@email.com","admin",100)
@@ -90,5 +91,24 @@ public class UserService {
 
     public boolean isUserAdminByID(String userid) {
         return (getById(userid).equals("admin")) ? true : false;
+    }
+
+    public boolean checkProductId(String productid) {
+        return merchantStockService.productService.isProductByID(productid);
+    }
+
+    public boolean buyNoCart(String userid, String productid, String merchantid) {
+        User user = getById(userid);
+        Product product = merchantStockService.productService.getById(productid);
+        Merchant merchant = merchantStockService.getMerchantByID(merchantid);
+        MerchantStock merchantStock = merchantStockService.getMerchantByID(merchantid,productid);
+        if (!(merchantStock.getStock() > 0) || !(user.getBalance() > product.getPrice())){
+            return false;
+        }
+        merchantStock.setStock(merchantStock.getStock()-1);
+        user.setBalance(user.getBalance()-product.getPrice());
+        String newPurchaseHistoryId = String.valueOf(purchaseHistoryService.purchaseHistorys.size()+1);
+        purchaseHistoryService.purchaseHistorys.add(new PurchaseHistory(newPurchaseHistoryId, userid, productid,product.getPrice()));
+        return true;
     }
 }
