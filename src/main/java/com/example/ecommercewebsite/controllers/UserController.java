@@ -34,10 +34,20 @@ public class UserController {
     @GetMapping("{id}")
     ResponseEntity<Object> getUserByID(@PathVariable String id){
         if (!userService.isUserByID(id)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("Not Found, no ride with that id", HttpStatus.BAD_REQUEST));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("Not Found, no user with that id", HttpStatus.BAD_REQUEST));
         }
         return  ResponseEntity.status(HttpStatus.OK).body(userService.getById(id));
     }
+
+    @GetMapping("history/{id}")
+    ResponseEntity<Object> getUserHistory(@PathVariable String id){
+        if (!userService.isUserByID(id)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("Not Found, no user with that id", HttpStatus.BAD_REQUEST));
+        }
+        
+        return  ResponseEntity.status(HttpStatus.OK).body(userService.getUserHistory(id));
+    }
+
     /**
      * Add new data.
      * @param user date to be added

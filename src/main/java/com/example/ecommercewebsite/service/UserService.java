@@ -170,4 +170,14 @@ public class UserService {
         }
         return true;
     }
+
+    public Object getUserHistory(String id) {
+        ArrayList<Product> products =new ArrayList<>();
+        for (PurchaseHistory p: purchaseHistoryService.purchaseHistorys) {
+            if (p.getUserid().equals(id)){
+                products.add(merchantStockService.productService.getById(p.getProductid()));
+            }
+        }
+        return products;
+    }
 }
