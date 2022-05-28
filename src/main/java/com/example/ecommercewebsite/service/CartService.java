@@ -108,4 +108,18 @@ public class CartService {
         }
         return false ;
     }
+
+    public boolean removeProductToUser(String userid, String productid) {
+        User user = userService.getById(userid);
+        Product product = productService.getById(productid);
+        if (!isUserCartByID(userid)){
+            String newCartId = String.valueOf(carts.size()+1);
+            carts.add(new Cart(newCartId,userid,new ArrayList<Product>()));
+        }
+        Cart cart = getByUserId(userid);
+        ArrayList<Product> products = cart.getProductsList();
+        products.remove(product);
+        cart.setProductsList(products);
+        return true;
+    }
 }

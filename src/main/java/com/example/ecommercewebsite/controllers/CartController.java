@@ -49,10 +49,18 @@ public class CartController {
         } catch(IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }
-    }@PostMapping("/add")
+    }
+    @PostMapping("/add")
     ResponseEntity<Api> addProductToUser(@PathParam("userid") String userid,@PathParam("productid") String productid){
         if(cartService.checkUserId(userid) && cartService.checkProductId(productid)) {
             return (cartService.addProductToUser(userid,productid)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
+        } else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("userid or productid is not valid", HttpStatus.BAD_REQUEST));
+    }
+    @PutMapping("/remove")
+    ResponseEntity<Api> removeProductFromUser(@PathParam("userid") String userid,@PathParam("productid") String productid){
+        if(cartService.checkUserId(userid) && cartService.checkProductId(productid)) {
+            return (cartService.removeProductToUser(userid,productid)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Successfully deleted!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
         } else
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("userid or productid is not valid", HttpStatus.BAD_REQUEST));
     }
