@@ -1,16 +1,18 @@
 package com.example.ecommercewebsite.service;
 
-import com.example.ecommercewebsite.model.User;
+import com.example.ecommercewebsite.model.*;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService {
     List<User> users = new ArrayList<>();
-
-    public UserService() {
+    final MerchantStockService merchantStockService;
+    public UserService(MerchantService merchantService, MerchantStockService merchantStockService) {
+        this.merchantStockService = merchantStockService;
         this.users.addAll(
                 List.of(
                         new User("101","Abdullah","a123456","email@email.com","admin",100),
@@ -19,6 +21,9 @@ public class UserService {
                         new User("104","Ali","a123456","email@email.com","admin",100)
                 ));
     }
+
+
+
     public List<User> getUsers(){
         return users;
     }
@@ -63,5 +68,27 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    public boolean checkMerchantId(String merchantid) {
+        return merchantStockService.isMerchantByID(merchantid);
+    }
+
+    public boolean addProductToMerchant(String merchantid, Product product, String stock) {
+    //Merchant merchant = merchantStockService.getMerchantByID(merchantid);
+        if(!merchantStockService.isMerchantStockByMerchantAndProductID(merchantid, product.getId())){
+            String newId = String.valueOf(merchantStockService.merchantStocks.size()+1);
+            MerchantStock newMerchantStock = new MerchantStock(newId, product.getId(), merchantid, Integer.parseInt(stock));
+            merchantStockService.merchantStocks.add(newMerchantStock);
+        }else {
+            MerchantStock merchantStock = merchantStockService.getMerchantByID(merchantid, product.getId());
+            merchantStock.setStock(merchantStock.getStock()+Integer.parseInt(stock));
+        }
+
+        return true;
+    }
+
+    public boolean isUserAdminByID(String userid) {
+        return (getById(userid).equals("admin")) ? true : false;
     }
 }

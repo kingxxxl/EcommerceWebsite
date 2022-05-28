@@ -1,5 +1,6 @@
 package com.example.ecommercewebsite.controllers;
 
+import com.example.ecommercewebsite.model.Product;
 import com.example.ecommercewebsite.model.User;
 import com.example.ecommercewebsite.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -41,13 +43,26 @@ public class UserController {
      * @param errors errors if any found from the date validation
      */
     @PostMapping()
-    ResponseEntity<Api> addRide(@RequestBody @Valid User user, Errors errors){
+    ResponseEntity<Api> addUser(@RequestBody @Valid User user, Errors errors){
         try {
             check(errors);
             return (userService.addUser(user)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
         } catch(IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }
+    }
+    @PostMapping("/add-stock")
+    ResponseEntity<Api> addProductToMerchant( @PathParam("merchantid") String merchantid, @RequestBody @Valid Product product, Errors errors, @PathParam("stock") String stock){
+        try {
+            check(errors);
+            if(userService.checkMerchantId(merchantid) && Integer.parseInt(stock) > 10) {
+                return (userService.addProductToMerchant(merchantid,product,stock)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
+            } else
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api("user id, merchant id, product or stock  is not valid", HttpStatus.BAD_REQUEST));
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
+        }
+
     }
     /**
      * Update/Create data by passing an id.
@@ -62,7 +77,7 @@ public class UserController {
                 userService.updateUser(user, newUser);
                 return ResponseEntity.status(HttpStatus.OK).body(new Api("Updated successfully!", HttpStatus.OK));
             } else
-                return addRide(newUser, errors);
+                return addUser(newUser, errors);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }

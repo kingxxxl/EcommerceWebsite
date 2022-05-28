@@ -13,10 +13,10 @@ public class MerchantService {
     public MerchantService() {
         this.merchants.addAll(
                 List.of(
-                        new Merchant("101","Abdullah"),
-                        new Merchant("102","Ahmed"),
-                        new Merchant("103","Salah"),
-                        new Merchant("104","Ali")
+                        new Merchant("301","Otheam"),
+                        new Merchant("302","Baja"),
+                        new Merchant("303","Noon"),
+                        new Merchant("304","Jarir")
                 ));
     }
     public List<Merchant> getMerchants(){

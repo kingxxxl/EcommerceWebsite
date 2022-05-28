@@ -1,5 +1,6 @@
 package com.example.ecommercewebsite.service;
 
+import com.example.ecommercewebsite.model.Merchant;
 import com.example.ecommercewebsite.model.MerchantStock;
 import org.springframework.stereotype.Service;
 
@@ -8,9 +9,13 @@ import java.util.List;
 
 @Service
 public class MerchantStockService {
-    List<MerchantStock> merchantStocks = new ArrayList<>();
 
-    public MerchantStockService() {
+    List<MerchantStock> merchantStocks = new ArrayList<>();
+    final MerchantService merchantService;
+
+
+    public MerchantStockService(MerchantService merchantService) {
+        this.merchantService = merchantService;
         this.merchantStocks.addAll(
                 List.of(
                         new MerchantStock("101","101","101",100),
@@ -41,12 +46,18 @@ public class MerchantStockService {
     }
 
     public boolean isMerchantStockByID(String id){
-        int checkForWork = -1;
-        MerchantStock merchantStock = getById(id);
-        if (merchantStock != null){
-            checkForWork = Integer.parseInt(id);
+        return getById(id) != null;
+    }public boolean isMerchantStockByMerchantAndProductID(String merchantid,String productid){
+        return getMerchantStockByMerchantAndProductID(merchantid,productid) != null;
+    }
+
+    private MerchantStock getMerchantStockByMerchantAndProductID(String merchantid, String productid) {
+        for (MerchantStock merchantStock: this.merchantStocks) {
+            if (merchantStock.getMerchantid().equals(merchantid) && merchantStock.getProductid().equals(productid) ){
+                return merchantStock;
+            }
         }
-        return (checkForWork == -1) ? false :  true;
+        return null;
     }
 
 
@@ -61,5 +72,31 @@ public class MerchantStockService {
             }
         }
         return null;
+    }
+    public Merchant getMerchantByID(String merchantid) {
+        for (Merchant m: merchantService.merchants) {
+            if (m.getId().equals(merchantid)){
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public MerchantStock getMerchantByID(String merchantid, String productid) {
+        for (MerchantStock m: merchantStocks) {
+            if (m.getProductid().equals(productid) && m.getMerchantid().equals(merchantid)){
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public boolean isMerchantByID(String merchantid) {
+        for (Merchant m: merchantService.merchants) {
+            if (m.getId().equals(merchantid)){
+                return true;
+            }
+        }
+        return false ;
     }
 }
