@@ -1,6 +1,7 @@
 package com.example.ecommercewebsite.service;
 
 import com.example.ecommercewebsite.model.Comment;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,14 +10,16 @@ import java.util.List;
 @Service
 public class CommentService {
     List<Comment> comments = new ArrayList<>();
+    final PurchaseHistoryService purchaseHistoryService;
 
-    public CommentService() {
+    public CommentService(PurchaseHistoryService purchaseHistoryService) {
+        this.purchaseHistoryService = purchaseHistoryService;
         this.comments.addAll(
                 List.of(
-                        new Comment("101","101","message",1),
-                        new Comment("102","101","message",1),
-                        new Comment("103","101","message",1),
-                        new Comment("104","101","message",1)
+                        new Comment("101","101","message","1"),
+                        new Comment("102","101","message","1"),
+                        new Comment("103","101","message","1"),
+                        new Comment("104","101","message","1")
                 ));
     }
     public List<Comment> getComments(){

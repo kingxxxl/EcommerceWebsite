@@ -2,6 +2,8 @@ package com.example.ecommercewebsite.service;
 
 import com.example.ecommercewebsite.model.Comment;
 import com.example.ecommercewebsite.model.Product;
+import com.example.ecommercewebsite.model.PurchaseHistory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,8 +12,9 @@ import java.util.List;
 @Service
 public class ProductService {
     List<Product> products = new ArrayList<>();
-
-    public ProductService() {
+    final CommentService commentService;
+    public ProductService(CommentService commentService) {
+        this.commentService = commentService;
         this.products.addAll(
                 List.of(
                         new Product("701","ball",350,"1",new ArrayList<Comment>()),
@@ -60,5 +63,23 @@ public class ProductService {
             }
         }
         return null;
+    }
+
+    public boolean addComment(String userid, String productid, Comment comment) {
+        if(isBought(userid,productid)){
+            getById(productid).getCommentsList().add(comment);
+            commentService.comments.add(comment);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isBought(String userid, String productid) {
+        for (PurchaseHistory p:commentService.purchaseHistoryService.purchaseHistorys) {
+            if (p.getUserid().equals(userid) && p.getProductid().equals(productid)){
+                return true;
+            }
+        }
+        return false;
     }
 }

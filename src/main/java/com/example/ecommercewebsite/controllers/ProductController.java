@@ -1,5 +1,6 @@
 package com.example.ecommercewebsite.controllers;
 
+import com.example.ecommercewebsite.model.Comment;
 import com.example.ecommercewebsite.model.Product;
 import com.example.ecommercewebsite.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 @RestController
 @RequestMapping("/product")
@@ -44,6 +46,15 @@ public class ProductController {
         try {
             check(errors);
             return (productService.addProduct(product)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
+        } catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
+        }
+    }
+    @PostMapping("/comment")
+    ResponseEntity<Api> addProduct(@PathParam("userid") String userid, @PathParam("productid") String productid, @RequestBody @Valid Comment comment, Errors errors){
+        try {
+            check(errors);
+            return (productService.addComment(userid, productid, comment)) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api("Adding comment was successful!", HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Api("Adding was NOT successful!!", HttpStatus.INTERNAL_SERVER_ERROR));
         } catch(IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }
