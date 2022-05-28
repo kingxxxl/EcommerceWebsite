@@ -2,6 +2,7 @@ package com.example.ecommercewebsite.service;
 
 import com.example.ecommercewebsite.model.Cart;
 import com.example.ecommercewebsite.model.Product;
+import com.example.ecommercewebsite.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,8 +11,12 @@ import java.util.List;
 @Service
 public class CartService {
     List<Cart> carts = new ArrayList<>();
+    final UserService userService;
+    final ProductService productService;
 
-    public CartService() {
+    public CartService(UserService userService, ProductService productService) {
+        this.userService = userService;
+        this.productService = productService;
         this.carts.addAll(
                 List.of(
                         new Cart("101","101",new ArrayList<Product>()),
@@ -63,4 +68,44 @@ public class CartService {
         return null;
     }
 
+    public boolean checkUserId(String userid) {
+        return (userService.isUserByID(userid)) ? true : false;
+    }
+
+    public boolean checkProductId(String productid) {
+        return (productService.isProductByID(productid)) ? true : false;
+
+    }
+
+    public boolean addProductToUser(String userid, String productid) {
+        User user = userService.getById(userid);
+        Product product = productService.getById(productid);
+        if (!isUserCartByID(userid)){
+            String newCartId = String.valueOf(carts.size()+1);
+            carts.add(new Cart(newCartId,userid,new ArrayList<Product>()));
+        }
+        Cart cart = getByUserId(userid);
+        ArrayList<Product> products = cart.getProductsList();
+        products.add(product);
+        cart.setProductsList(products);
+        return true;
+    }
+
+    private Cart getByUserId(String userid) {
+        for (Cart c:carts) {
+            if (c.getUserid().equals(userid)){
+                return c;
+            }
+        }
+        return null;
+    }
+
+    private boolean isUserCartByID(String userid) {
+        for (Cart c:carts) {
+            if (c.getUserid().equals(userid)){
+                return true;
+            }
+        }
+        return false ;
+    }
 }
