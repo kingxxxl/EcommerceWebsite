@@ -59,6 +59,16 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api(e.getMessage(), HttpStatus.BAD_REQUEST));
         }
     }
+    @GetMapping("/comment/{id}")
+    ResponseEntity<Api> addProduct(@PathVariable String id){
+        Product product = productService.getById(id);
+        if (product != null){
+            return (product.getCommentsList().size() >0) ? ResponseEntity.status(HttpStatus.CREATED).body(new Api(product.getCommentsList().toString(), HttpStatus.CREATED)) : ResponseEntity.status(HttpStatus.OK).body(new Api("No comments for this product", HttpStatus.OK));
+
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Api( "no product with that id!", HttpStatus.BAD_REQUEST));
+
+    }
     /**
      * Update/Create data by passing an id.
      * @param id id of the data
