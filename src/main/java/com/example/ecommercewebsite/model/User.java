@@ -2,6 +2,7 @@ package com.example.ecommercewebsite.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.context.annotation.Lazy;
 
 import javax.validation.constraints.*;
 

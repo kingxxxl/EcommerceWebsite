@@ -12,11 +12,9 @@ public class UserService {
     List<User> users = new ArrayList<>();
     final MerchantStockService merchantStockService;
     final PurchaseHistoryService purchaseHistoryService;
-    final CartService cartService;
-    public UserService(MerchantService merchantService, MerchantStockService merchantStockService, PurchaseHistoryService purchaseHistoryService, CartService cartService) {
+    public UserService(MerchantStockService merchantStockService, PurchaseHistoryService purchaseHistoryService) {
         this.merchantStockService = merchantStockService;
         this.purchaseHistoryService = purchaseHistoryService;
-        this.cartService = cartService;
         this.users.addAll(
                 List.of(
                         new User("101","Abdullah","a123456","email@email.com","admin",1000),
@@ -126,8 +124,6 @@ public class UserService {
     }
 
     public boolean buyCart(Cart cart) {
-        boolean what = isEnoughStock(cart);
-        System.out.println(what);
         if (!isEnoughMoney(cart) ||!isEnoughStock(cart)){
             return false;
         }
@@ -152,7 +148,7 @@ public class UserService {
     public boolean isEnoughStock(Cart cart){
         HashMap<Product,Integer> count = new HashMap();
         for (Product p:cart.getProductsList()){
-            Product product = merchantStockService.productService.getById(p.getId());
+//            Product product = merchantStockService.productService.getById(p.getId());
             if (count.containsKey(p)){
                 count.replace(p, (count.get(p))+1);
             }
@@ -163,7 +159,6 @@ public class UserService {
 
         System.out.println(count);
         for (Product p: cart.getProductsList()) {
-            System.out.println("p= "+p.getId()+"count.p= "+count.get(p));
             if (count.get(p) > merchantStockService.getStockByproductId(p.getId())){
                 return false;
             }
